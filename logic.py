@@ -73,22 +73,7 @@ def generate_expr(variables, expr, iterations, branching_percentage=50, repeat_v
     return expr
 
 
-
-def print_tree(node, prefix="", is_left=True):
-    if type(node) != str:
-        if node.left or node.right:
-            # Print the current node
-            connector = "├─" if is_left else "└─"
-            print(prefix + connector + str(node.operator))
-
-            # Adjust prefix for children
-            new_prefix = prefix + ("│ " if is_left else "  ")
-
-            # Recurse for left and right children
-            print_tree(node.left, new_prefix, is_left=True)
-            print_tree(node.right, new_prefix, is_left=False)
-
-
+from print_tree import print_tree
 
 if __name__ == '__main__':
 
@@ -96,7 +81,7 @@ if __name__ == '__main__':
     repeat_variables = False
     not_percentage = 40
     branching_percentage = 80
-    iterations = 2
+    iterations = 4
     
     operators = ['and', 'or', 'implies', 'iff']
     variables = list('ABCDEFGHIJKMNOPQRSTUVWXYZ')[:variables_number]
@@ -112,3 +97,4 @@ if __name__ == '__main__':
 
     print(expr)
     print_tree(expr)
+
