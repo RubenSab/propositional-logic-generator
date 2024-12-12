@@ -24,7 +24,7 @@ class Node:
 
 
 
-def random_simple_expr(variables, repeat_variables=False, not_percentage=50):
+def random_simple_expr(operators, variables, repeat_variables=False, not_percentage=50, not_op='not'):
 
     X = random.choice(variables) 
     Y = random.choice(variables)
@@ -32,43 +32,47 @@ def random_simple_expr(variables, repeat_variables=False, not_percentage=50):
     if not repeat_variables:
         while X == Y:
             X = random.choice(variables) 
-            Y = random.choice(variables)    
+            Y = random.choice(variables)
 
     if random.random()*100 < not_percentage:
-        X = f'not {X}'
+        X = f'{not_op} {X}'
 
     if random.random()*100 < not_percentage:
-        Y = f'not {Y}'
+        Y = f'{not_op} {Y}'
     
     return Node(X, random.choice(operators), Y)
 
 
 
-def generate_expr(variables, expr, iterations, branching_percentage=50, repeat_variables=False, not_percentage=50):
+def generate_expr(operators, variables, expr, iterations, branching_percentage=50, repeat_variables=False, not_percentage=50, not_op='not'):
 
     if iterations > 0 and random.random()*100 < branching_percentage:
 
-        expr.left = random_simple_expr(variables, repeat_variables, not_percentage)
-        expr.left = generate_expr(
+        base_expr = random_simple_expr(operators, variables, repeat_variables, not_percentage, not_op)
+        expr.left = (random.random()*100 < not_percentage)*f'{not_op} '+str(generate_expr(
+            operators,
             variables,
-            expr.left,
+            base_expr,
             iterations-1,
             branching_percentage,
             repeat_variables,
-            not_percentage 
-        )
+            not_percentage,
+            not_op,
+        ))
 
     if iterations > 0 and random.random()*100 < branching_percentage:
 
-        expr.right = random_simple_expr(variables, repeat_variables, not_percentage)
-        expr.right = generate_expr(
-                variables,
-                expr.right,
-                iterations-1,
-                branching_percentage,
-                repeat_variables,
-                not_percentage
-        )
+        base_expr = random_simple_expr(operators, variables, repeat_variables, not_percentage, not_op)
+        expr.right = (random.random()*100 < not_percentage)*f'{not_op} '+str(generate_expr(
+            operators,
+            variables,
+            base_expr,
+            iterations-1,
+            branching_percentage,
+            repeat_variables,
+            not_percentage,
+            not_op,
+        ))
 
     return expr
 
@@ -79,22 +83,25 @@ if __name__ == '__main__':
 
     variables_number = 2
     repeat_variables = False
-    not_percentage = 40
-    branching_percentage = 80
-    iterations = 4
+    not_percentage = 30
+    branching_percentage = 70
+    iterations = 2
+    operators = [r'\land', r'\lor', r'\implies', r'\iff']
+    not_op = r'\neg'
     
-    operators = ['and', 'or', 'implies', 'iff']
     variables = list('ABCDEFGHIJKMNOPQRSTUVWXYZ')[:variables_number]
 
-    expr = generate_expr(
-            variables,
-            random_simple_expr(variables, repeat_variables, not_percentage),
-            iterations,
-            branching_percentage,
-            repeat_variables,
-            not_percentage,
-            )
+    for i in range(7):
+        base_expr = random_simple_expr(operators, variables, repeat_variables, not_percentage, not_op)
+        expr = generate_expr(
+                operators,
+                variables,
+                base_expr,
+                iterations,
+                branching_percentage,
+                repeat_variables,
+                not_percentage,
+                not_op,
+                )
 
-    print(expr)
-    print_tree(expr)
-
+        print(f'${expr}$')
