@@ -8,11 +8,8 @@ class Node:
         self.right = right
         self.left = left
 
-    def __repr__(self, is_root=False):
-        if is_root:
-            return f'{self.left} {self.operator} {self.right}'
-        else:
-            return f'({self.left} {self.operator} {self.right})'
+    def __repr__(self):
+        return f'({self.left} {self.operator} {self.right})'
 
 
 def random_simple_expr(operators, variables, repeat_variables=False, not_percentage=50, not_op='not'):
@@ -74,20 +71,14 @@ from print_tree import print_tree
 
 if __name__ == '__main__':
 
-    variables_number = 10
-    
-    repeat_variables = False
-    not_percentage = 30
-    branching_percentage = 70
-    branching_iterations = 2
-    number_of_expr = 30
+    from config import *
 
     operators = [r'\land', r'\lor', r'\implies', r'\iff']
     not_op = r'\neg'
     
     variables = list('ABCDEFGHIJKMNOPQRSTUVWXYZ')[:variables_number]
 
-    with open('expressions.md', 'w') as f:
+    with open(file, 'w') as f:
         f.write('')
 
     for _ in range(number_of_expr):
@@ -103,5 +94,7 @@ if __name__ == '__main__':
             not_op,
         )
 
-        with open('expressions.md', 'a') as f:
-            f.write(f'- ${expr}$\n')
+        if verbose:
+            print(str(expr)[1:-1])
+        with open(file, 'a') as f:
+            f.write(f'{expressions_format}')

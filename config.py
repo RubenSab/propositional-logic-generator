@@ -1,0 +1,9 @@
+variables_number = 3
+repeat_variables = False
+not_percentage = 30
+branching_percentage = 70
+branching_iterations = 2
+number_of_expr = 30
+file = 'expressions.md'
+expressions_format = '- ${str(expr)[1:-1]}$\n'
+verbose = True
